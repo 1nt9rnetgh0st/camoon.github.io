@@ -1,9 +1,10 @@
 ---
 title: "sanchoiFCTF 1 Write-up"  
-date: 2026-03-27 +0700  
+date: 2026-04-16 +0700  
 categories: [CTF, Web, Pwn, FCTF]  
-tags: [web, ctf, pwn, sanchoi, FCTF, FPTU, FPT shop, ILOVEFPTU]
+tags: [web, ctf, pwn, sanchoi, FCTF, FPTU, fptshop, ILOVEFPTU]
 ---
+
 
 Trong mini-test này có hai mảng là pwn và web. Trong đó mình đã hoàn thành được các bài:
 
