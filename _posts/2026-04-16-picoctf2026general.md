@@ -3,6 +3,9 @@ title: "Picoctf 2026 - General skill challenges"
 date: 2026-04-14 +0700  
 categories: [CTF, General]  
 tags: [General skill, linux, picoctf, picoctf2026, ctf]
+image:
+  path: https://plasticuproject.com/images/b00tl3gRSA3/picoctf_logo.png
+  alt: "PICOCTF 2026"
 ---
 # Undo
 ![image](https://hackmd.io/_uploads/HkwxB8s2-l.png)
