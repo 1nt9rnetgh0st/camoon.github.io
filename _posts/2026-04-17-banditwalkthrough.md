@@ -3,7 +3,8 @@ title: "OverTheWire: Bandit - Full Walkthrough"
 date: 2026-04-17 +0700  
 categories: [CTF, Linux, General]  
 tags: [Linux, OverTheWire, Network, Command, Write-up]
-
+image:
+  path: https://hacknos.com/wp-content/uploads/2020/05/overthewire-bandit-2-3.png
 ---
 
 ## Level 0 - 1
