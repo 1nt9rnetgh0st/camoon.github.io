@@ -6,6 +6,7 @@ tags: [ctf, web, pwn, sanchoi, FCTF]
 image:
   path: https://sanchoi.iahn.hanoi.vn/assets/fctf-logo.png
   alt: "sanchoi FCTF"
+comments: true
 ---
 
 Trong mini-test này có hai mảng là pwn và web. Trong đó mình đã hoàn thành được các bài:
