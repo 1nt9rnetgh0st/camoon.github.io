@@ -6,6 +6,7 @@ tags: [General skill, linux, picoctf, picoctf2026, ctf]
 image:
   path: https://plasticuproject.com/images/b00tl3gRSA3/picoctf_logo.png
   alt: "PICOCTF 2026"
+comments: true
 ---
 ## Undo
 ![image](https://hackmd.io/_uploads/HkwxB8s2-l.png)
