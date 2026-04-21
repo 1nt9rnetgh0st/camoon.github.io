@@ -5,6 +5,7 @@ categories: [CTF-Writeups, OverTheWire, Bandit]
 tags: [Linux, OverTheWire, Network, Command, Write-up]
 image:
   path: https://hackmd.io/_uploads/BkJ0fSy6be.png
+comments: true
 ---
 
 ## Level 0 - 1
