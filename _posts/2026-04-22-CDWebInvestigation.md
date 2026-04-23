@@ -1,5 +1,5 @@
 ---  
-title: "Web Investigation"  
+title: "CyberDefender: Web Investigation - Write up"  
 date: 2026-04-22 +0700  
 categories: [Lab-Writeups, CyberDefender]
 tags: [SOC, SOC tier 1, Forensic, Lab, Blue, web]
