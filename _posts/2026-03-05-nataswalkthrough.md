@@ -107,7 +107,7 @@ Password: xcoXLmzMkoIP9D7hlgPlh9XD7OgLAe5Q
 ```
 ## Level 8 - 9
 In this challenges, again, we see an input. The authentication is it use encode user input and check it with a encoded secret in the server.
-```php!
+```php
 <?
 
 $encodedSecret = "3d3d516343746d4d6d6c315669563362";
@@ -137,7 +137,7 @@ Password: ZE1ck82lmdGIoErlhQgWND6j2Wzz6b6t
 ```
 ## Level 9 - 10
 We can see it search the user input in a dictionary file directly by appending and running an OS command.
-```php!
+```php
 <?
 $key = "";
 
@@ -161,7 +161,7 @@ Password: t7I5VHvpa14sJTUGV0cbEsbYfFP2dmOu
 
 ## Level 10 - 11 
 In this level, it has a filter to prevent **OS command injection**
-```php!
+```php
 <?
 $key = "";
 
@@ -189,7 +189,7 @@ Password: UJdqkK1pTu6VLt9UHWAgRZz6sVUZ3lEk
 ```
 ## Level 11 - 12 
 Read the code we can see it use XOR to protect the cookie data, and we do not know the key.
-```php!
+```php
 $defaultdata = array( "showpassword"=>"no", "bgcolor"=>"#ffffff");
 
 function xor_encrypt($in) {
@@ -319,7 +319,7 @@ Password: trbs5pCjCrkuSknBBKHhaBxq6Wm1j3LC
 
 ## Level 13 - 14 
 In this level it have a filter that used function exif_imagetype to check if the file is an image.
-```php!
+```php
  else if (! exif_imagetype($_FILES['uploadedfile']['tmp_name'])) {
         echo "File is not an image";
     }
@@ -448,7 +448,7 @@ Password: hPkjKYviLQctEW33QmuXL6eDVfMW4sGo
 ```
 ## Level 16 - 17
 Another command injection challnge like in previous level but this added more security
-```php!
+```php
 <?
 $key = "";
 
@@ -554,7 +554,7 @@ Password: 0xjsNNjGvHkb7pwgC6PrAyLNT0pYCqHd
 ```
 ## Level 18 - 19 
 In this challenge, the web has remove the admin login function. But look at the code, we can see the web create session id with only numberic number from 1 to 640 without using the $user variable, so that we can change the session id value to IDOR and access to other people account.
-```php!
+```php
 $maxid = 640; // 640 should be enough for everyone
 // ...
 function createID($user) { /*
