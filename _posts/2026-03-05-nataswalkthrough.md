@@ -6,7 +6,8 @@ tags: [web, OverTheWire, Network, Command, Write-up]
 image:
   path: https://hackmd.io/_uploads/BkNkrJrRWx.png
 ---
-
+math: true
+---
 Actually, I pretty like OTW wargames, ỉt's like a very exciting way to practice. And this is also a write up of a OTW wargame which is **Natas** - a wargame specific for basic web exploitation skill.
 ## Level 0 - 1
 When login it say "password for next level on this page". But there nothing in the page.
