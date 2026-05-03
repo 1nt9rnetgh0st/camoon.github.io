@@ -555,7 +555,7 @@ In this challenge, the web has remove the admin login function. But look at the 
 ```php!
 $maxid = 640; // 640 should be enough for everyone
 // ...
-function createID($user) { /* {{{ */
+function createID($user) { /*
     global $maxid;
     return rand(1, $maxid);
 }
