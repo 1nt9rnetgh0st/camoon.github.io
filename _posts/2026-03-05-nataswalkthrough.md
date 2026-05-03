@@ -237,9 +237,13 @@ saveData($data);
 ?>
 ```
 But XOR have a property:
-$A \oplus B = C$
-$C \oplus B = A$ 
-$C \oplus A = B$
+
+$$A \oplus B = C$$
+
+$$C \oplus B = A$$ 
+
+$$C \oplus A = B$$
+
 So the idea is we use the data in the cookie XOR with the unencrypted data to get the key, then we change the data and XOR encrypt with that key.
 We can use the PHP complier to write code to get the key.
 ![image](https://hackmd.io/_uploads/Skp94zJRWx.png)
@@ -248,7 +252,8 @@ Then we have the key repeatedly
 eDWoeDWoeDWoeDWoeDWoeDWoeDWoeDWoeDWoeDWoe
 ```
 => Key `eDWo`
-change "showpassword" to yes then encrypt it with the key we get.
+
+Change "showpassword" to yes then encrypt it with the key we get.
 ![image](https://hackmd.io/_uploads/SkmF_my0-l.png)
 Change `data` cookie to the new cookie we get the password
 ![image](https://hackmd.io/_uploads/rJ9ROmJCbl.png)
